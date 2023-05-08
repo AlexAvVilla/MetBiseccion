@@ -1,4 +1,5 @@
 
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -43,8 +44,8 @@ public class VistaPrincipal extends javax.swing.JFrame {
         btnCalcular = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         txtRaiz = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jtDatos = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtInfo = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,18 +69,9 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
         jLabel6.setText("Raiz:");
 
-        jtDatos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(jtDatos);
+        txtInfo.setColumns(20);
+        txtInfo.setRows(5);
+        jScrollPane1.setViewportView(txtInfo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -106,13 +98,13 @@ public class VistaPrincipal extends javax.swing.JFrame {
                             .addComponent(txtFuncion, javax.swing.GroupLayout.Alignment.LEADING))
                         .addGap(29, 29, 29)
                         .addComponent(btnCalcular)))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 422, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -136,15 +128,15 @@ public class VistaPrincipal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(txtTol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txtRaiz, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(38, 38, 38))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -153,24 +145,59 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
         DefaultTableModel modelo;
         String funcion = txtFuncion.getText();
-        modelo = (DefaultTableModel) jtDatos.getModel();
-        double li, ls, to;
+        double a, b, tol;
+        txtInfo.append("Iteración\t\t|\tA\t|\tf(a)\t|\tB\t|\tf(b)\t|\tC\t|\tF(c)\n");
         
-        li = Double.parseDouble(txtInfe.getText());
-        ls = Double.parseDouble(txtSupe.getText());
-        to = Double.parseDouble(txtTol.getText());
+        a = Double.parseDouble(txtInfe.getText());
+        b = Double.parseDouble(txtSupe.getText());
+        tol = Double.parseDouble(txtTol.getText());
         
         Metodo metodo = new Metodo();
         
         metodo.setFuncion(funcion);
-        double raiz = metodo.biseccion(li, ls, to);
-        //modelo.addRow(new Object[]{this.met.contador, a, evaA, b, evaB,this.met.x});
-        jtDatos.setModel(modelo);
+        double raiz = metodo.biseccion(a, b, tol);
+         
         txtRaiz.setText(raiz + "");
         
+        /*double fa = evaluar(funcion, a);
+        double fb = evaluar(funcion, b);
+        
+        if (fa * fb > 0) {
+                JOptionPane.showMessageDialog(this, "La función no cambia de signo en el intervalo dado.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int iter = 0;
+            double c = (a + b) / 2;
+            double fc = evaluar(funcion, c);
+            double error = Math.abs(b - a);
+
+            while (error > tol) {
+                iter++;
+                if (fa * fc < 0) {
+                    b = c;
+                    fb = fc;
+                } else {
+                    a = c;
+                    fa = fc;
+                }
+                c = (a + b) / 2;
+                fc = evaluar(funcion, c);
+                error = Math.abs(b - a);
+                txtInfo.append(String.format("%d\t\t|\t%.7f\t|\t%.7f\t|\t%.7f\t|\t%.7f\t|\t%.7f\t|\t%.7f\n", iter, a, fa, b, fb, c, fc));
+            }
+
+            txtRaiz.setText(Double.toString(c));*/
         
     }//GEN-LAST:event_btnCalcularActionPerformed
 
+    private double evaluar(String funcion, double x) {
+        // Aquí se puede implementar la evaluación de la función en x.
+        // Por ejemplo, si la función es f(x) = x^2 - 1, se puede usar:
+        // return Math.pow(x, 2) - 1;
+        return 0;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -214,10 +241,10 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JScrollPane jScrollPane2;
-    public javax.swing.JTable jtDatos;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField txtFuncion;
     private javax.swing.JTextField txtInfe;
+    public javax.swing.JTextArea txtInfo;
     private javax.swing.JTextField txtRaiz;
     private javax.swing.JTextField txtSupe;
     private javax.swing.JTextField txtTol;

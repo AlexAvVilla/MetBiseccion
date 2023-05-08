@@ -44,7 +44,6 @@ public class Metodo {
                     }else{
                         a = this.x;
                     }
-                    
                 } while (Math.abs(this.fun.Evaluar(x)) > t);
                 
                 
